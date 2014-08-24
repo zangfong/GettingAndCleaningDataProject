@@ -13,7 +13,7 @@ cleandata.txt
 How to run this R script
 Firstly, we should install the package reshape2;
 
-secondly, We should set working directory to wherever this folder "UCI HAR Dataset" is, then we can access the following files while running this R script.
+Secondly, we should set working directory to wherever this folder "UCI HAR Dataset" is, then we can access the following files while running this R script.
 
 Thirdly, the clean data set "cleandata.txt" shall be created in the same path where this R script is placed.
 
