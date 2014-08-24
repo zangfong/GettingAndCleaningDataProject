@@ -27,7 +27,6 @@ StdMeasure<-grep("std()",FeatureFile$V2)
 MeanMeasure <- append(MeanMeasure,StdMeasure)
 MeanAndStd <-MeanMeasure[order(MeanMeasure)]
 
-MeanAndStd
 
 ##Step 3 & 4 , Appropriately labels the data set with descriptive variable names.  Uses descriptive activity names to name the activities in the data set
 FeatureName<-read.table("./UCI HAR Dataset/features.txt",header=FALSE)
