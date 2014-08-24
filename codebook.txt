@@ -1,0 +1,108 @@
+This is the codebook of this project, but I really don't know how to describe data...
+So I explain how this code works here.
+
+
+##Step 1, Merges the training and the test sets to create one data set.
+##read and combine the train data
+XTrain<-read.table("./UCI HAR Dataset/train/X_train.txt",header=FALSE)
+SubjuectTrain<-read.csv("./UCI HAR Dataset/train/subject_train.txt",header=FALSE)
+YTrain<-read.csv("./UCI HAR Dataset/train/y_train.txt",header=FALSE)
+Trainfile <-cbind(XTrain,cbind(SubjuectTrain,YTrain))
+
+##read and combine the test data
+XTest<-read.table("./UCI HAR Dataset/test/X_test.txt",header=FALSE)
+SubjectTest<-read.csv("./UCI HAR Dataset/test/subject_test.txt",header=FALSE)
+YTest<-read.csv("./UCI HAR Dataset/test/y_test.txt",header=FALSE)
+Testfile <-cbind(XTest,cbind(SubjectTest,YTest))
+
+##combine train and test data
+OneSet <- rbind(Trainfile,Testfile)
+
+After Step 1, the Merged data is stored in this variable OneSet.
+
+
+##Step 2, Extracts only the measurements on the mean and standard deviation for each measurement. 
+##read the feature file
+FeatureFile<-read.table("./UCI HAR Dataset/features.txt",header=FALSE)
+##grep the mean and standard deviation from this file seperately
+MeanMeasure<-grep("mean()",FeatureFile$V2)
+StdMeasure<-grep("std()",FeatureFile$V2)
+
+##merge them and sort, then we get the list stored in MeanAndStd, which tells us which columns are the mean and standard deviation measurements
+MeanMeasure <- append(MeanMeasure,StdMeasure)
+MeanAndStd <-MeanMeasure[order(MeanMeasure)]
+
+After Step 2, the mean and std measurement columns are stored in this variable MeanAndStd
+
+
+##Step 3 & 4 , Appropriately labels the data set with descriptive variable names.  Uses descriptive activity names to name the activities in the data set
+FeatureName<-read.table("./UCI HAR Dataset/features.txt",header=FALSE)
+dcname <-as.character(FeatureName[,2])
+dcname <-append(dcname, "Subject")
+dcname <-append(dcname, "Activity")
+names(OneSet)<- dcname
+
+For Step 3 & 4, I just pass names to these variables columns
+
+##Step 5, Creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+idvect <- as.character(c("Subject","Activity"))
+SetMelt <-melt(OneSet,id = idvect ,measure.vars=MeanAndStd)
+
+cleanData <- dcast(SetMelt,Subject+Activity~variable,mean)
+write.table(cleanData,file="./cleandata.txt")
+
+For this Step 5, the clean data set will be stored in a file named "cleandata.txt"
+
+
+---------------------------
++How to run this R script
++Firstly, we should install the package reshape2;
++
++secondly, We should set working directory to wherever this folder "UCI HAR Dataset" is, then we can access the following files while running this R script.
++
++Thirdly, the clean data set "cleandata.txt" shall be created in the same path where this R script is placed.
++
++
++Here is the treelist on my computer based on OS Win 7 
++
++G:\R\DATA\GETTING_DATA_PROJECT
++│ cleandata.txt
++│ run_analysis.R
++│
++└─UCI HAR Dataset
++    │  activity_labels.txt
++    │  features.txt
++    │  features_info.txt
++    │  README.txt
++    │
++    ├─test
++    │  │  subject_test.txt
++    │  │  X_test.txt
++    │  │  y_test.txt
++    │  │
++    │  └─Inertial Signals
++    │          body_acc_x_test.txt
++    │          body_acc_y_test.txt
++    │          body_acc_z_test.txt
++    │          body_gyro_x_test.txt
++    │          body_gyro_y_test.txt
++    │          body_gyro_z_test.txt
++    │          total_acc_x_test.txt
++    │          total_acc_y_test.txt
++    │          total_acc_z_test.txt
++    │
++    └─train
++        │  subject_train.txt
++        │  X_train.txt
++        │  y_train.txt
++        │
++        └─Inertial Signals
++                body_acc_x_train.txt
++                body_acc_y_train.txt
++                body_acc_z_train.txt
++                body_gyro_x_train.txt
++                body_gyro_y_train.txt
++                body_gyro_z_train.txt
++                total_acc_x_train.txt
++                total_acc_y_train.txt
++                total_acc_z_train.txt
